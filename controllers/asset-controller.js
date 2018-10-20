@@ -3,7 +3,7 @@ const AWS = require('aws-sdk');
 const path = require('path');
 const { isEmpty, isFinite, toNumber } = require('lodash');
 
-AWS.config.loadFromPath(path.join(__dirname, '..', 'my-config.json'));
+AWS.config.loadFromPath(path.join(__dirname, '..', 'aws-config.json'));
 const s3 = new AWS.S3();
 
 const incompleteAssets = new Map();
@@ -12,7 +12,7 @@ const completeAssets = new Set();
 const newAssetHandler = (req, res) => {
   const id = uuid();
   const params = {
-    Bucket: 'ts-tests',
+    Bucket: 'ts-engineering-test',
     Key: id
   };
 
@@ -57,7 +57,7 @@ const getCompletedAsset = (req, res) => {
 
   const { timeout = 60 } = req.query;
   const params = {
-    Bucket: 'ts-tests',
+    Bucket: 'ts-engineering-test',
     Key: id,
     Expires: isFinite(toNumber(timeout)) ? toNumber(timeout) : 60
   };
