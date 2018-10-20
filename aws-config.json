@@ -1,0 +1,8 @@
+{
+  "region": "us-east-1",
+  "accessKeyId": "AKIAIFPODV5Z66HLO2VA",
+  "secretAccessKey": "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",
+  "apiVersions": {
+    "s3": "2006-03-01"
+  }
+}
