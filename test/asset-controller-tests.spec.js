@@ -81,8 +81,10 @@ describe('#PUT /asset/:id', function() {
       .end(function(err, res) {
         request(app)
           .put(`/asset/${res.body.id}`)
+          .send({ status: 'uploaded' })
           .end(function(error, response) {
-            expect(res.statusCode).to.equal(200);
+            console.log(response.text);
+            expect(response.statusCode).to.equal(200);
             done();
           });
       });
@@ -92,9 +94,77 @@ describe('#PUT /asset/:id', function() {
     this.slow(10000);
     request(app)
       .put('/asset')
+      .send({ status: 'uploaded' })
       .end(function(err, res) {
+        console.log(res.text);
         expect(res.statusCode).to.equal(400);
         done();
+      });
+  });
+
+  it('should fail when asset is not created', function(done) {
+    this.slow(10000);
+    request(app)
+      .put('/asset/12456')
+      .send({ status: 'uploaded' })
+      .end(function(err, res) {
+        console.log(res.text);
+        expect(res.statusCode).to.equal(400);
+        done();
+      });
+  });
+
+  it('should succeed for valid asset id when status is ->uploaded', function(done) {
+    this.slow(10000);
+    request(app)
+      .post('/asset')
+      .end(function(err, res) {
+        request(app)
+          .put(`/asset/${res.body.id}`)
+          .send({ status: 'uploaded' })
+          .end(function(error, response) {
+            console.log(response.text);
+            expect(response.statusCode).to.equal(200);
+            done();
+          });
+      });
+  });
+
+  it('should succeed for valid asset id when status is not ->uploaded', function(done) {
+    this.slow(10000);
+    request(app)
+      .post('/asset')
+      .end(function(err, res) {
+        request(app)
+          .put(`/asset/${res.body.id}`)
+          .send({ status: 'uploading' })
+          .end(function(error, response) {
+            console.log(response.text);
+            expect(response.statusCode).to.equal(200);
+            done();
+          });
+      });
+  });
+
+  it('should fail once asset has been set as uploaded', function(done) {
+    this.slow(10000);
+    request(app)
+      .post('/asset')
+      .end(function(err, res) {
+        request(app)
+          .put(`/asset/${res.body.id}`)
+          .send({ status: 'uploaded' })
+          .end(function(error, response) {
+            expect(response.statusCode).to.equal(200);
+            request(app)
+              .put(`/asset/${res.body.id}`)
+              .send({ status: 'uploaded' })
+              .end(function(error1, response1) {
+                console.log(response1.text);
+                expect(response1.statusCode).to.equal(400);
+                done();
+              });
+          });
       });
   });
 });

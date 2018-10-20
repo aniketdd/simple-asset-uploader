@@ -31,7 +31,7 @@ const newAssetHandler = (req, res) => {
 };
 
 const completeAssetUpload = (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   if (isEmpty(id)) {
     return res.status(400).send('Missing asset id');
   }
@@ -40,12 +40,17 @@ const completeAssetUpload = (req, res) => {
   if (status === 'uploaded' && incompleteAssets.has(id)) {
     incompleteAssets.delete(id);
     completeAssets.add(id);
+    return res.status(200).send('Asset is completely uploaded');
+  } else if (completeAssets.has(id)) {
+    return res.status(400).send('Asset is already uploaded');
+  } else if (!incompleteAssets.has(id)) {
+    return res.status(400).send('Asset has not been created yet');
   }
-  res.sendStatus(200);
+  return res.status(200).send(`Asset status is set as: ${status}`);
 };
 
 const getCompletedAsset = (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   if (isEmpty(id)) {
     return res.status(400).send('Missing asset id');
   }
