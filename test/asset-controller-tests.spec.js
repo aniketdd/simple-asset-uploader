@@ -42,36 +42,37 @@ describe('Simple asset uploader Tests', function() {
           done();
         });
     });
-  });
-  it('user should be able to make put call on signed url', function(done) {
-    this.slow = 5000;
-    request(app)
-      .post('/asset')
-      .end(function(err, res) {
-        request(res.body['upload_url'])
-          .put('')
-          .attach('../aws-config.json')
-          .end(function(error, response) {
-            expect(response.statusCode).to.equal(200);
-            done();
-          });
-      });
-  });
-  it('post/get call on the signed url should fail', function(done) {
-    this.slow = 10000;
-    request(app)
-      .post('/asset')
-      .end(function(err, res) {
-        request(res.body['upload_url'])
-          .post('')
-          .attach('../aws-config.json')
-          .end(function(error, response) {
-            expect(response.statusCode).to.not.equal(200);
-            done();
-          });
-      });
+    it('user should be able to make put call on signed url', function(done) {
+      this.slow = 5000;
+      request(app)
+        .post('/asset')
+        .end(function(err, res) {
+          request(res.body['upload_url'])
+            .put('')
+            .attach('../aws-config.json')
+            .end(function(error, response) {
+              expect(response.statusCode).to.equal(200);
+              done();
+            });
+        });
+    });
+    it('post/get call on the signed url should fail', function(done) {
+      this.slow = 10000;
+      request(app)
+        .post('/asset')
+        .end(function(err, res) {
+          request(res.body['upload_url'])
+            .post('')
+            .attach('../aws-config.json')
+            .end(function(error, response) {
+              expect(response.statusCode).to.not.equal(200);
+              done();
+            });
+        });
+    });
   });
 });
+
 describe('#PUT /asset/:id', function() {
   it('should succeed for given asset id', function(done) {
     this.slow(10000);
@@ -86,6 +87,7 @@ describe('#PUT /asset/:id', function() {
           });
       });
   });
+
   it('should fail when asset id is missing', function(done) {
     this.slow(10000);
     request(app)
