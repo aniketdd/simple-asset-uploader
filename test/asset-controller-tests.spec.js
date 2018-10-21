@@ -381,7 +381,7 @@ describe('#GET /asset/:id', function() {
       });
   });
 
-  it('should assume default timeout of 60 seconds when not provided, call made timeout should succeed', function(done) {
+  it('should assume default timeout of 60 seconds when not provided, call made before timeout should succeed', function(done) {
     this.timeout(65000);
     request(app)
       .post('/asset')
