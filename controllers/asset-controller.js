@@ -2,6 +2,9 @@ const uuid = require('uuid/v1');
 const AWS = require('aws-sdk');
 const path = require('path');
 const { isEmpty, isFinite, toNumber } = require('lodash');
+const {
+  confirmUpload
+} = require('../services/asset-upload-confirmation-service');
 
 AWS.config.loadFromPath(path.join(__dirname, '..', 'aws-config.json'));
 const s3 = new AWS.S3();
@@ -37,16 +40,8 @@ const completeAssetUpload = (req, res) => {
   }
 
   const { status } = req.body;
-  if (status === 'uploaded' && incompleteAssets.has(id)) {
-    incompleteAssets.delete(id);
-    completeAssets.add(id);
-    return res.status(200).send('Asset is completely uploaded');
-  } else if (completeAssets.has(id)) {
-    return res.status(400).send('Asset is already uploaded');
-  } else if (!incompleteAssets.has(id)) {
-    return res.status(400).send('Asset has not been created yet');
-  }
-  return res.status(200).send(`Asset status is set as: ${status}`);
+  const result = confirmUpload(id, status, incompleteAssets, completeAssets);
+  return res.status(result.status).send(result.message);
 };
 
 const getCompletedAsset = (req, res) => {
